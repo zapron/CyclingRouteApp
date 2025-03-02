@@ -1,7 +1,15 @@
 // screens/HistoryScreen.tsx
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { SavedRoute, getAllRoutes, clearAllRoutes } from "../services/storage";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HistoryScreen() {
   const [routes, setRoutes] = useState<SavedRoute[]>([]);
@@ -20,6 +28,8 @@ export default function HistoryScreen() {
     setRoutes([]);
   };
 
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Route History</Text>
@@ -29,11 +39,14 @@ export default function HistoryScreen() {
         data={routes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.routeItem}>
+          <TouchableOpacity
+            style={styles.routeItem}
+            onPress={() => navigation.navigate("RouteDetail", { route: item })}
+          >
             <Text>Date: {new Date(item.createdAt).toLocaleString()}</Text>
             <Text>Distance: {(item.distance / 1000).toFixed(2)} km</Text>
             <Text>Points: {item.coordinates.length}</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>

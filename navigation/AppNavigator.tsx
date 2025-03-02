@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
 import MapScreen from "../screens/MapScreen";
 import HistoryScreen from "../screens/HistoryScreen";
+import RouteDetailScreen from "../screens/RouteDetailScreen";
 
 // We'll create these screens shortly
 
@@ -14,6 +15,7 @@ type RootStackParamList = {
   Home: undefined;
   Map: undefined;
   History: undefined;
+  RouteDetail: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -26,6 +28,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
         <Stack.Screen name="History" component={HistoryScreen} />
+        <Stack.Screen name="RouteDetail" component={RouteDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
