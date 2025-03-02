@@ -8,6 +8,7 @@ type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Map: undefined;
+  History: undefined;
 };
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;

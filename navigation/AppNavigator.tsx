@@ -9,7 +9,14 @@ import HistoryScreen from "../screens/HistoryScreen";
 
 // We'll create these screens shortly
 
-const Stack = createStackNavigator();
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  Map: undefined;
+  History: undefined;
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (

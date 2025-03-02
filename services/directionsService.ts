@@ -44,6 +44,8 @@ export async function getRouteFromMapbox(
 
   return {
     coordinates,
+    outboundCoords: coordinates,
+    inboundCoords: coordinates,
     distance: routeData.distance,
     duration: routeData.duration,
   };

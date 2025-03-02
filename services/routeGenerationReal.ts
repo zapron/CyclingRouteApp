@@ -1,7 +1,8 @@
 // services/routeGenerationReal.ts
 import { Route, getRouteFromMapbox } from "./directionsService";
-import { LatLng } from "./routeInterfaces"; // or wherever you define Route
+// or wherever you define Route
 import { computeDestinationPoint } from "./computeDestinationPoint";
+import { LatLng } from "../utils/routeGenerationTypes";
 
 export async function getCircuitRouteOfExactDistance(
   origin: LatLng,
@@ -35,6 +36,7 @@ export async function getCircuitRouteOfExactDistance(
         inboundCoords: inbound.coordinates.slice(1),
         distance: combinedDistance,
         duration: combinedDuration,
+        coordinates: [],
       };
 
       if (Math.abs(combinedDistance - targetDistance) < 100) {
