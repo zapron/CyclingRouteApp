@@ -1,6 +1,7 @@
-import { LatLng } from "../utils/routeGenerationTypes";
-import { getRouteFromMapbox, Route } from "./directionsService";
-import { computeDestinationPoint } from "./computeDestinationPoint"; // same helper as before
+// services/routeGenerationReal.ts
+import { Route, getRouteFromMapbox } from "./directionsService";
+import { LatLng } from "./routeInterfaces"; // or wherever you define Route
+import { computeDestinationPoint } from "./computeDestinationPoint";
 
 export async function getCircuitRouteOfExactDistance(
   origin: LatLng,
@@ -12,7 +13,6 @@ export async function getCircuitRouteOfExactDistance(
 
   while (iterations < 10) {
     const guessDistance = targetDistance * factor;
-    // For variety, you could pick a random bearing each iteration. For now, let's do 0° (north).
     const guessedDestination = computeDestinationPoint(
       origin,
       guessDistance,
@@ -25,44 +25,35 @@ export async function getCircuitRouteOfExactDistance(
       // 2) Return route
       const inbound = await getRouteFromMapbox(guessedDestination, origin);
 
-      // Combine them into a single route object
-      const combinedDistance = outbound.distance + inbound.distance; // total meters
-      const combinedCoordinates = [
-        ...outbound.coordinates,
-        // omit the last coordinate so we don't duplicate the guessedDestination marker
-        ...inbound.coordinates.slice(1),
-      ];
+      const combinedDistance = outbound.distance + inbound.distance;
+      const combinedDuration = outbound.duration + inbound.duration;
 
-      // We'll consider the entire route's distance for iteration
+      // Build a Route object with separate arrays
+      const route: Route = {
+        outboundCoords: outbound.coordinates,
+        // remove the first coordinate from inbound to avoid duplication at the guessedDestination
+        inboundCoords: inbound.coordinates.slice(1),
+        distance: combinedDistance,
+        duration: combinedDuration,
+      };
+
       if (Math.abs(combinedDistance - targetDistance) < 100) {
-        // If within 100m, let's call it good
-        return {
-          coordinates: combinedCoordinates,
-          distance: combinedDistance,
-          duration: outbound.duration + inbound.duration,
-        };
+        return route;
       }
 
-      // Adjust factor based on whether we need a longer or shorter route
+      // Adjust factor
       if (combinedDistance < targetDistance) {
         factor *= 1.1;
       } else {
         factor *= 0.9;
       }
-
-      // Keep track of the best route so far
-      bestRoute = {
-        coordinates: combinedCoordinates,
-        distance: combinedDistance,
-        duration: outbound.duration + inbound.duration,
-      };
+      bestRoute = route;
     } catch (error) {
       throw error;
     }
     iterations++;
   }
 
-  // If we exit the loop, return the best we have
   if (bestRoute) {
     return bestRoute;
   }

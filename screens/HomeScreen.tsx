@@ -23,6 +23,10 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to the Home Screen!</Text>
       <Button title="Go to Map" onPress={handleGoToMap} />
+      <Button
+        title="View History"
+        onPress={() => navigation.navigate("History")}
+      />
     </View>
   );
 }

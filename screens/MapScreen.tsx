@@ -11,7 +11,9 @@ import {
 import MapView, { Marker, Polyline, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import { getCircuitRouteOfExactDistance } from "../services/routeGenerationReal";
+import { v4 as uuidv4 } from "uuid";
 import { LatLng } from "../utils/routeGenerationTypes";
+import { saveRoute } from "../services/storage";
 
 export default function MapScreen() {
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -27,6 +29,8 @@ export default function MapScreen() {
   const [estimatedDistance, setEstimatedDistance] = useState<number | null>(
     null
   );
+  const [outboundCoordinates, setOutboundCoordinates] = useState<LatLng[]>([]);
+  const [inboundCoordinates, setInboundCoordinates] = useState<LatLng[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -67,8 +71,23 @@ export default function MapScreen() {
         targetDistanceInMeters
       );
       // Our route comes decoded as coordinates already
-      setRouteCoordinates(route.coordinates);
+
+      const fullRouteCoordinates = [
+        ...route.outboundCoords,
+        ...route.inboundCoords,
+      ];
+      setOutboundCoordinates(route.outboundCoords);
+      setInboundCoordinates(route.inboundCoords);
       setEstimatedDistance(route.distance);
+
+      const newSavedRoute = {
+        id: uuidv4(),
+        distance: route.distance,
+        createdAt: new Date().toISOString(),
+        coordinates: fullRouteCoordinates,
+      };
+
+      await saveRoute(newSavedRoute);
     } catch (error: any) {
       alert(error.message);
     }
@@ -127,9 +146,16 @@ export default function MapScreen() {
                 title="You are here"
               />
             )}
-            {routeCoordinates.length > 1 && (
+            {outboundCoordinates.length > 1 && (
               <Polyline
-                coordinates={routeCoordinates}
+                coordinates={outboundCoordinates}
+                strokeColor="blue"
+                strokeWidth={3}
+              />
+            )}
+            {inboundCoordinates.length > 1 && (
+              <Polyline
+                coordinates={inboundCoordinates}
                 strokeColor="red"
                 strokeWidth={3}
               />

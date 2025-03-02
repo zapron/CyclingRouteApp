@@ -8,10 +8,14 @@
 import { LatLng } from "../utils/routeGenerationTypes";
 import polyline from "@mapbox/polyline";
 
+// services/directionsService.ts or routeGenerationReal.ts
+
 export interface Route {
-  coordinates: LatLng[]; // Decoded route coordinates
-  distance: number; // Total distance in meters
-  duration: number; // Duration in seconds
+  coordinates: LatLng[];
+  outboundCoords: LatLng[];
+  inboundCoords: LatLng[];
+  distance: number;
+  duration: number;
 }
 
 const MAPBOX_ACCESS_TOKEN =
