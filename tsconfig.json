@@ -2,5 +2,9 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true
-  }
+  },
+  "include": [
+    "global.d.ts", // or "mapbox-polyline.d.ts"
+    "src/**/*"
+  ]
 }
