@@ -128,6 +128,7 @@ export default function MapScreen() {
                   }
                   strokeColor="red"
                   strokeWidth={3}
+                  lineDashPattern={[10, 10]}
                 />
               </>
             )}
